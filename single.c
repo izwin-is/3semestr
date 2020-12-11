@@ -16,6 +16,8 @@ struct s {
 	char str[1];
 };
 
+// void writer(char *str);
+
 int main(int argc, char const *argv[])
 {
 	char *path = "single.c";
@@ -24,39 +26,49 @@ int main(int argc, char const *argv[])
 
 	struct msqid_ds buf;
 	msgctl(id, IPC_STAT, &buf);
-	// printf("%ld", buf.msg_stime);
 	if (buf.msg_stime == 0)
 	{
 		struct s message;
 		message.type = 1;
 		msgsnd(id, &message, 1, 0);
 
-		char str[] = "H\ne\nl\nl\no\n,\n \nw\no\nr\nl\nd\n";
+
+		char str[] = "Hello, world!\n";
 		int i = 0;
 		for (i; i < sizeof(str); i++)
 		{
 			usleep(500000);
-			printf("%c", str[i]);
+			write(1, str + i, 1);
 		}
 
 
+
+
 		msgctl(id, IPC_STAT, &buf);
-		// printf("%ld", buf.msg_stime);
 
 		msgctl(id, IPC_RMID, NULL);
 	}
 	else
 	{
-		printf("Goodbye, world\n");
+		char str[] = "Goodbye, world!\n";
+		int i = 0;
+		for (i; i < sizeof(str); i++)
+		{
+			usleep(500000);
+			write(1, str + i, 1);
+		}
 		msgctl(id, IPC_RMID, NULL);
 	}
 
-
-	// int program_type = 0;
-
-
-
-
-	
 	return 0;
 }
+
+// void writer(char *str)
+// {
+// 	int i = 0;
+// 	for (i; i < sizeof(str); i++)
+// 	{
+// 		usleep(500000);
+// 		write(1, str + i, 1);
+// 	}
+// }
